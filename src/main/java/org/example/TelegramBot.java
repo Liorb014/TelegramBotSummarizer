@@ -7,10 +7,11 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class TelegramBot extends TelegramLongPollingBot {
-    private final Map<Long, List<String>> chatMessages = new HashMap<>();
+    private final Map<Long, List<UserMessage>> aa = new HashMap<>();
     private final MessageSummarizer summarizer = new MessageSummarizer();
 
     @Override
@@ -18,49 +19,39 @@ public class TelegramBot extends TelegramLongPollingBot {
         if (update.hasMessage() && update.getMessage().hasText()) {
             Message message = update.getMessage();
 
-            String firstName =message.getFrom().getFirstName();
-            String lastName = message.getFrom().getLastName()==null?  "": message.getFrom().getLastName();
-            String userName =firstName + " " +lastName;
+            String firstName = message.getFrom().getFirstName();
+            String lastName = message.getFrom().getLastName() == null ? "" : message.getFrom().getLastName();
+            String userName = firstName + " " + lastName;
 
             Long chatId = message.getChatId();
             String text = message.getText();
+            LocalDateTime time = LocalDateTime.now();
 
-            if (!chatMessages.containsKey(chatId)) {
-                chatMessages.put(chatId, new ArrayList<>());
+            if (!aa.containsKey(chatId)) {
+                aa.put(chatId, new ArrayList<>());
             }
 
-            if (!message.isCommand()){
-                chatMessages.get(chatId).add(userName+ " : "+text );
+            if (!message.isCommand()) {
+                aa.get(chatId).add(new UserMessage(userName, text, time));
             }
-
 
             System.out.println(update.getMessage().getText());
-            System.out.println(userName);
-
-            System.out.println(chatMessages.get(chatId).toString());
 
 
-
-if (update.getMessage().getText().equals("/a")){
-    String summary = summarizer.summarize(chatMessages.get(chatId));
-    sendSummary(chatId, summary , message.getMessageId());
-    chatMessages.get(chatId).clear();
-}
-//            // Check if we should summarize (every 10 messages)
-//            if (chatMessages.get(chatId).size() >= 3) {
-//                String summary = summarizer.summarize(chatMessages.get(chatId));
-//                sendSummary(chatId, summary);
-//                chatMessages.get(chatId).clear();
-//            }
+            if (update.getMessage().getText().equals("/a")) {
+              List<String> messageList=  aa.get(chatId).stream().map(m -> m.getUsername() +": "+ m.getText()).toList();
+                String summary = summarizer.summarize(messageList);
+                sendSummary(chatId, summary, message.getMessageId());
+            }
         }
     }
 
     private void sendSummary(Long chatId, String summary, Integer replyToMessageId) {
         try {
-             SendMessage message = new SendMessage();
-             message.setChatId(chatId);
-             message.setText(   "📚 Summary:\n" + summary);
-             message.setReplyToMessageId(replyToMessageId);
+            SendMessage message = new SendMessage();
+            message.setChatId(chatId);
+            message.setText("📚 Summary:\n" + summary);
+            message.setReplyToMessageId(replyToMessageId);
             execute(message);
         } catch (TelegramApiException e) {
             e.printStackTrace();
