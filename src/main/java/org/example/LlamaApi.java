@@ -18,8 +18,10 @@ public class LlamaApi {
     private final HttpClient client = HttpClient.newHttpClient();
     private final Gson gson = new Gson();
 
-    public String fetchData2(String text) throws ExecutionException, InterruptedException, IOException {
-        String prompt = "summary the flowing conversation in as few word as you can be accurate and dont deviate from the topic, use the names of the user :";
+    public String fetchData2(String text) {
+        String prompt = """
+         Summarize the following conversation concisely, accurately reflecting the content and using the names mentioned. Format the summary as a single block of text. If the conversation is not in English, respond with: 'Sorry, I cannot summarize in different languages.' Otherwise, provide only the summary.
+                            """;
         prompt = prompt.concat(text);
         JsonObject requestData = new JsonObject();
         requestData.addProperty("model", model);
@@ -46,7 +48,7 @@ public class LlamaApi {
                 System.out.println(jsonObject.get("response").getAsString());
                 return jsonObject.get("response").getAsString();
             } else {
-                return jsonResponse; // Return the whole JSON if "response" field is missing
+                return jsonResponse;
             }
         } catch (Exception e) {
             System.err.println("Error parsing JSON response: " + e.getMessage());
