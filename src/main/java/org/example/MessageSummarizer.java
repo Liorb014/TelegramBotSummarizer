@@ -13,8 +13,8 @@ public class MessageSummarizer {
     public String summarize(List<String> messages) {
         try {
             String payload = mapper.writeValueAsString(Map.of("messages", messages));
-            LlamaApi llamaApi = new LlamaApi();
-            return String.valueOf(llamaApi.fetchData2( payload ));
+            OllamaApi ollamaApi = new OllamaApi();
+            return String.valueOf(ollamaApi.fetchData( payload ));
 
         } catch (Exception e) {
             return "Summarization error";
