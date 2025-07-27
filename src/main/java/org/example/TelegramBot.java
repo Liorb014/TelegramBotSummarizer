@@ -9,10 +9,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.example.KeyboardFactory.createCountKeyboard;
 import static org.example.KeyboardFactory.createTimeKeyboard;
@@ -20,6 +17,15 @@ import static org.example.KeyboardFactory.createTimeKeyboard;
 public class TelegramBot extends TelegramLongPollingBot {
     private final Map<Long, List<UserMessage>> messagesMap = new HashMap<>();
     private final MessageSummarizer summarizer = new MessageSummarizer();
+public void cleaner(){
+    MessageCleaner cleaner = new MessageCleaner(messagesMap);
+    Timer timer=new Timer();
+    timer.schedule(cleaner,0 ,1000*60*60*12);
+}
+    public TelegramBot() {
+        super();
+        cleaner();
+    }
 
     @Override
     public void onUpdateReceived(Update update) {

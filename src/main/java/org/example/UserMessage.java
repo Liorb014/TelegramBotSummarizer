@@ -37,4 +37,14 @@ public class UserMessage {
     public void setTimeSent(LocalDateTime timeSent) {
         this.timeSent = timeSent;
     }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("UserMessage{");
+        sb.append("username='").append(username).append('\'');
+        sb.append(", text='").append(text).append('\'');
+        sb.append(", timeSent=").append(timeSent);
+        sb.append('}');
+        return sb.toString();
+    }
 }
