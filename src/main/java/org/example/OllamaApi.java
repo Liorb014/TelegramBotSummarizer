@@ -12,18 +12,15 @@ import java.util.concurrent.CompletableFuture;
 public class OllamaApi {
 
     private final String baseUrl = "http://127.0.0.1:11434/api/generate";
-//    private final String model = "gemma3:4b";
     private final String model = "gemma3:4b" ;
     private final HttpClient client = HttpClient.newHttpClient();
     private final Gson gson = new Gson();
-
     public String fetchData(String text) {
         String prompt = """
                  Your task is to extract the **main subject** and summary the following conversion:
                                      """;
         String promptRules = """  
                  your rules:
-                 
                  your default language = Hebrew.
                  if motioned english write in english else keep sending output only in Hebrew.
                  1. **Summary Style**:
@@ -44,9 +41,6 @@ public class OllamaApi {
                     4.**Do**:
                      - mention usernames.
                      - notice "no" and mention it.
-                    
-                    
-               
                 """;
         prompt = prompt.concat(text.concat(promptRules));
         JsonObject requestData = new JsonObject();
