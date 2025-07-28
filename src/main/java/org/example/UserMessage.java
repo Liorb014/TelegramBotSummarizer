@@ -1,6 +1,7 @@
 package org.example;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class UserMessage {
     private String username;
@@ -12,6 +13,26 @@ public class UserMessage {
         this.username = username;
         this.text = text;
         this.timeSent = timeSent;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        UserMessage that = (UserMessage) o;
+
+        if (!Objects.equals(username, that.username)) return false;
+        if (!Objects.equals(text, that.text)) return false;
+        return Objects.equals(timeSent, that.timeSent);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = username != null ? username.hashCode() : 0;
+        result = 31 * result + (text != null ? text.hashCode() : 0);
+        result = 31 * result + (timeSent != null ? timeSent.hashCode() : 0);
+        return result;
     }
 
     public String getUsername() {
@@ -38,13 +59,4 @@ public class UserMessage {
         this.timeSent = timeSent;
     }
 
-    @Override
-    public String toString() {
-        final StringBuilder sb = new StringBuilder("UserMessage{");
-        sb.append("username='").append(username).append('\'');
-        sb.append(", text='").append(text).append('\'');
-        sb.append(", timeSent=").append(timeSent);
-        sb.append('}');
-        return sb.toString();
-    }
 }
